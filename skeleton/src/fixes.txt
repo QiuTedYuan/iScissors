@@ -1,0 +1,18 @@
+Bugs (MSisms):
+define __max() and __min() in ImgFltAux.h (they are in MS stdlib.h but not GNU stdlib.h)
+rename typedef Contour that conflicted with ImgView::Contour() (ImgView.h)
+added return type to operator<(Node&, Node&) (iScissor.h)
+
+Bugs (just plain broken):
+change x to col and y to row in ImgView::PartialExpanding()
+catch exceptions (e.g. invalid filename) in ImgView::OpenImage() and SaveContour() and SaveMask()
+check for null pointer in ReadFile() and WriteFile() (FileIO.cpp)
+remove null pointers in contours[] left by CTypedPtrArray<T>::FreePtrs() in ImgView::FreeBuffer()
+snprintf vs sprintf in CError (Image.h)
+
+Bugs remaining:
+deleting void* in CRefCntMem::DecrementCount()
+
+Changes:
+reads image filename from the command line (thus, made ImgView::OpenImage(char *filename) public)
+selected contour is now blue, because I'm red color-blind.
