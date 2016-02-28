@@ -1,5 +1,5 @@
 #include "correlation.h"
-
+#include <cassert>
 /************************ TO BE DONE 2 **************************/
 /*
  *	INPUT: 

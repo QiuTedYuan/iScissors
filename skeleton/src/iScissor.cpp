@@ -3,7 +3,7 @@
 #include "iScissor.h"
 #include "fibheap.h"
 
-
+#include <iostream>
 
 
 // two inlined routined that may help;
@@ -37,7 +37,7 @@ void InitNodeBuf(Node *nodes, const unsigned char *img, int imgWidth, int imgHei
 			Node& node = NODE(nodes, col, row, imgWidth);
 			node.column = col;
 			node.row = row;
-	//		node.prevNode = NULL;
+			node.prevNode = NULL;
 		}
 	}
 	double** d_link = new double*[8];
@@ -52,7 +52,7 @@ void InitNodeBuf(Node *nodes, const unsigned char *img, int imgWidth, int imgHei
 				double red = PIXEL(result, col, row, 0, imgWidth);
 				double green = PIXEL(result, col, row, 1, imgWidth);
 				double blue = PIXEL(result, col, row, 2, imgWidth);
-				d_link[i][row*imgWidth + col] = (red*red + green*green + blue*blue) / 3;
+				d_link[i][row*imgWidth + col] = sqrt((red*red + green*green + blue*blue) / 3);
 				if (max_d < d_link[i][row*imgWidth + col]) {
 					max_d = d_link[i][row*imgWidth + col];
 				}
@@ -62,11 +62,10 @@ void InitNodeBuf(Node *nodes, const unsigned char *img, int imgWidth, int imgHei
 	}
 	for (int row = 0; row < imgHeight; ++row) {
 		for (int col = 0; col < imgWidth; ++col) {
-			Node& node = NODE(nodes, col, row, imgWidth);
 			for (int i = 0; i < 8; ++i) {
 				double d = d_link[i][row*imgWidth + col];
-				double cost = (max_d - d)*((i % 2 == 0) ? 1 : SQRT2);
-				node.linkCost[i] = cost;
+				double cost = (max_d - d)*((i % 2 == 0) ? 1 :SQRT2);
+				NODE(nodes, col, row, imgWidth).linkCost[i] = cost;
 			}
 		}
 	}
@@ -133,6 +132,7 @@ void LiveWireDP(int seedX, int seedY, Node *nodes, int width, int height, const 
 						}
 						else if (r->state==	ACTIVE) {
 							if (r->totalCost > q->totalCost + q->linkCost[i]) {
+								r->totalCost = q->totalCost + q->linkCost[i];
 								r->prevNode = q;
 								pq.Update(r);
 							}
@@ -215,6 +215,7 @@ void MakeCostGraph(unsigned char *costGraph, const Node *nodes, const unsigned c
 			cst[0] = pxl[0];
 			cst[1] = pxl[1];
 			cst[2] = pxl[2];
+
 			
 			//r,g,b channels are grad info in seperate channels;				
 			DigitizeCost(cst	   + dgX, node->linkCost[0]);
