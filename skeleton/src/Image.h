@@ -32,6 +32,7 @@
 #include "RefCntMem.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <string>
 
 #ifdef WIN32
@@ -41,6 +42,8 @@
 #define __max(a,b)  (((a) > (b)) ? (a) : (b))
 #define __min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
+
+using std::type_info;
 
 typedef unsigned char uchar;
 
@@ -158,21 +161,16 @@ struct RGBA
 
 // Simple error handling class
 
-struct CError : public exception
+struct CError : public std::exception
 {
-	// Fixed by Loren. Was strcpy and sprintf.
-	static const int maxlen = 1024; // longest allowable message
-    char message[maxlen+1];
-    CError(const char* msg)
-		{ strncpy(message, msg, maxlen); message[maxlen]=0; }
-    CError(const char* fmt, int d)
-		{ snprintf(message, maxlen, fmt, d); message[maxlen]=0; }
-    CError(const char* fmt, const char *s)
-		{ snprintf(message, maxlen, fmt, s); message[maxlen]=0; }
-    CError(const char* fmt, const char *s, int d)
-		{ snprintf(message, maxlen, fmt, s, d); message[maxlen]=0; }
-    CError(const char* fmt, const char *s, const char*s2)
-		{ snprintf(message, maxlen, fmt, s, s2); message[maxlen]=0; }
+    CError(const char* msg)                 { strcpy(message, msg); }
+    CError(const char* fmt, int d)          { sprintf(message, fmt, d); }
+    CError(const char* fmt, const char *s)  { sprintf(message, fmt, s); }
+    CError(const char* fmt, const char *s,
+           int d)                           { sprintf(message, fmt, s, d); }
+    CError(const char* fmt, const char *s,
+           const char*s2)                   { sprintf(message, fmt, s, s2); }
+    char message[1024];         // longest allowable message
 };
 
 

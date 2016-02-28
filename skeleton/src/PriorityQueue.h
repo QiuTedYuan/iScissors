@@ -168,53 +168,52 @@ public:
 template < class T >
 void CTypedPtrHeap< T >::Heapify( const int index )
 {
-	if ( !IsIndexValid( index ) )
-		return;
+    if ( !CTypedPtrArray<T>::IsIndexValid( index ) )
+        return;
 
-	int i = index;
-	while ( true )
-	{
-		int least = i;
+    int i = index;
+    while ( true ) {
+        int least = i;
+        
+        int left = Left( i );
+        if ( left < CTypedPtrArray<T>::m_iTail && 
+             *( CTypedPtrArray<T>::m_pHead[left] ) < *( CTypedPtrArray<T>::m_pHead[least] ) )
+            least = left;
 
-		int left = Left( i );
-		if ( left < m_iTail && *( m_pHead[left] ) < *( m_pHead[least] ) )
-			least = left;
+        int right = Right( i );
+        if ( right < CTypedPtrArray<T>::m_iTail && 
+             *( CTypedPtrArray<T>::m_pHead[right] ) < *( CTypedPtrArray<T>::m_pHead[least] ) )
+            least = right;
 
-		int right = Right( i );
-		if ( right < m_iTail && *( m_pHead[right] ) < *( m_pHead[least] ) )
-			least = right;
-
-		if ( least != i )
-		{
-			T *t = m_pHead[least];
-			m_pHead[least] = m_pHead[i];
-			m_pHead[least]->Index() = least;
-			m_pHead[i] = t;
-			m_pHead[i]->Index() = i;
-			i = least;
-		}
-		else
-			break;
-	}
+        if ( least != i ) {
+            T *t = CTypedPtrArray<T>::m_pHead[least];
+            CTypedPtrArray<T>::m_pHead[least] = CTypedPtrArray<T>::m_pHead[i];
+            CTypedPtrArray<T>::m_pHead[least]->Index() = least;
+            CTypedPtrArray<T>::m_pHead[i] = t;
+            CTypedPtrArray<T>::m_pHead[i]->Index() = i;
+            i = least;
+        } else {
+            break;
+        }
+    }
 }
 
 template < class T >
 void CTypedPtrHeap< T >::BubbleUp( const int index )
 {
-	if ( !IsIndexValid( index ) )
-		return;
+    if ( !CTypedPtrArray<T>::IsIndexValid( index ) )
+        return;
 
-	int i = index;
-	T *t = m_pHead[index];
+    int i = index;
+    T *t = CTypedPtrArray<T>::m_pHead[index];
 	
-	while ( Parent( i ) >= 0 && *t < *( m_pHead[Parent( i )] ) )
-	{
-		m_pHead[i] = m_pHead[Parent( i )];
-		m_pHead[i]->Index() = i;
-		i = Parent( i );
-	}
-	m_pHead[i] = t;
-	m_pHead[i]->Index() = i;
+    while ( Parent( i ) >= 0 && *t < *( CTypedPtrArray<T>::m_pHead[Parent( i )] ) ) {
+        CTypedPtrArray<T>::m_pHead[i] = CTypedPtrArray<T>::m_pHead[Parent( i )];
+        CTypedPtrArray<T>::m_pHead[i]->Index() = i;
+        i = Parent( i );
+    }
+    CTypedPtrArray<T>::m_pHead[i] = t;
+    CTypedPtrArray<T>::m_pHead[i]->Index() = i;
 }
 
 template < class T >
@@ -227,19 +226,18 @@ void CTypedPtrHeap< T >::Insert( T *t )
 template < class T >
 bool CTypedPtrHeap< T >::RemoveAt( const int index )
 {
-	if ( !IsIndexValid( index ) )
-		return false;
+    if ( !CTypedPtrArray<T>::IsIndexValid( index ) )
+        return false;
 
-	if ( index == m_iTail - 1 )
-		RemoveTail();
-	else
-	{
-		m_pHead[index] = m_pHead[m_iTail - 1];
-		m_pHead[index]->Index() = index;
-		RemoveTail();
-		UpdateAt( index );
-	}
-	return true;
+    if ( index == CTypedPtrArray<T>::m_iTail - 1 )
+        CTypedPtrArray<T>::RemoveTail();
+    else {
+        CTypedPtrArray<T>::m_pHead[index] = CTypedPtrArray<T>::m_pHead[CTypedPtrArray<T>::m_iTail - 1];
+        CTypedPtrArray<T>::m_pHead[index]->Index() = index;
+        CTypedPtrArray<T>::RemoveTail();
+        UpdateAt( index );
+    }
+    return true;
 }
 
 template < class T >
@@ -251,16 +249,16 @@ bool CTypedPtrHeap< T >::Remove( const T *t )
 template < class T >
 bool CTypedPtrHeap< T >::UpdateAt( const int index )
 {
-	if ( !IsIndexValid( index ) )
-		return false;
+    if ( !CTypedPtrArray<T>::IsIndexValid( index ) )
+        return false;
 
-	T *t = m_pHead[index];
-	Heapify( index );
+    T *t = CTypedPtrArray<T>::m_pHead[index];
+    Heapify( index );
 	
-	if ( t == m_pHead[index] )
-		BubbleUp( index );
-		
-	return true;
+    if ( t == CTypedPtrArray<T>::m_pHead[index] )
+        BubbleUp( index );
+    
+    return true;
 }
 
 template < class T >
@@ -272,22 +270,22 @@ bool CTypedPtrHeap< T >::Update( const T *t )
 template < class T >
 void CTypedPtrHeap< T >::BuildHeap( void )
 {
-	if ( IsEmpty() )
-		return;
+    if ( CTypedPtrArray<T>::IsEmpty() )
+        return;
 
-	for ( int i = Parent( m_iTail - 1 ); i >=0; i-- )
-		Heapify( i );
+    for ( int i = Parent( CTypedPtrArray<T>::m_iTail - 1 ); i >=0; i-- )
+        Heapify( i );
 }
 
 template < class T >
 T *CTypedPtrHeap< T >::ExtractMin( void )
 {
-	if ( IsEmpty() )
-		return NULL;
+    if ( CTypedPtrArray<T>::IsEmpty() )
+        return NULL;
 
-	T *t = m_pHead[0];
-	RemoveAt( 0 );
-	return t;
+    T *t = CTypedPtrArray<T>::m_pHead[0];
+    RemoveAt( 0 );
+    return t;
 }
 
 ////////////////////

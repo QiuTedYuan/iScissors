@@ -11,6 +11,10 @@ const int EXPANDED = 2;
 const double SQRT2 = 1.4142135623730950488016887242097;
 const double SQINV = 1.0/SQRT2;
 
+const double VERT_COEFF = 1/4.;
+const double DIAG_COEFF = 1/SQRT2;
+const double HORZ_COEFF = VERT_COEFF;
+
 // The eight filter kernels
 ///////////////////////////////////////////////////////////////////////
 // TODO: put all the correct numbers where they belong in the 3 x 3 filter kernels
@@ -18,44 +22,44 @@ const double SQINV = 1.0/SQRT2;
 
 const double kernels[8][9] = {
 	{ // 0
-		0.0000, 0.2500, 0.2500 ,
+		0.0000, HORZ_COEFF, HORZ_COEFF ,
 		0.0000, 0.0000, 0.0000 ,
-		0.0000, -0.2500, 0.2500 
+		0.0000, -HORZ_COEFF, -HORZ_COEFF 
 	},
 	{ // 1
-		0.0000, -SQINV, 0.0000 ,
-		0.0000, 0.0000, SQINV ,
+		0.0000, -DIAG_COEFF, 0.0000 ,
+		0.0000, 0.0000, DIAG_COEFF,
 		0.0000, 0.0000, 0.0000 
 	},
 	{ // 2
-		0.2500, 0.0000, -0.2500 ,
-		0.2500, 0.0000, -0.2500 ,
+		VERT_COEFF, 0.0000, -VERT_COEFF ,
+		VERT_COEFF, 0.0000, -VERT_COEFF ,
 		0.0000, 0.0000, 0.0000 
 	},
 	{ // 3
-		0.0000, SQINV, 0.0000 ,
-		-SQINV, 0.0000, 0.0000 ,
+		0.0000, DIAG_COEFF, 0.0000 ,
+		-DIAG_COEFF, 0.0000, 0.0000 ,
 		0.0000, 0.0000, 0.0000 
 	},
 	{ // 4
-		-0.2500, -0.2500, 0.0000 ,
+		HORZ_COEFF, HORZ_COEFF, 0.0000 ,
 		0.0000, 0.0000, 0.0000 ,
-		0.2500, 0.2500, 0.0000 
+		-HORZ_COEFF, -HORZ_COEFF, 0.0000 
 	},
 	{ // 5
 		0.0000, 0.0000, 0.0000 ,
-		SQINV, 0.0000, 0.0000 ,
-		0.0000, -SQINV, 0.0000 
+		DIAG_COEFF, 0.0000, 0.0000 ,
+		0.0000, -DIAG_COEFF, 0.0000 
 	},
 	{ // 6
 		0.0000, 0.0000, 0.0000 ,
-		-0.2500, 0.2500, 0.0000 ,
-		-0.2500, 0.2500, 0.0000 
+		-VERT_COEFF, 0.0000, VERT_COEFF,
+		-VERT_COEFF, 0.0000, VERT_COEFF 
 	},
 	{ // 7
 		0.0000, 0.0000, 0.0000 ,
-		0.0000, 0.0000, -SQINV ,
-		0.0000, SQINV, 0.0000 
+		0.0000, 0.0000, DIAG_COEFF,
+		0.0000, -DIAG_COEFF, 0.0000 
 	}
 
 };
